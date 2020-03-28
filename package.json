@@ -1,0 +1,30 @@
+{
+  "name": "Asset_Load_Controller",
+  "version": "0.6.0",
+  "author": "Theis C. N. Pedersen",
+  "scripts": {
+    "build": "babel script_source.js -o script_built.js --minified --compact"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.8.4",
+    "@babel/core": "7.9.0",
+    "@babel/preset-env": "7.9.0"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/env",
+        {
+          "modules": false,
+          "targets": {
+            "chrome": "42",
+            "edge": "12",
+            "ie": "8",
+            "safari": "5.1"
+          }
+        },
+        "stage-0"
+      ]
+    ]
+  }
+}
