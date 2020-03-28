@@ -1,6 +1,6 @@
 {
   "name": "Asset_Load_Controller",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "author": "Theis C. N. Pedersen",
   "scripts": {
     "build": "babel script_source.js -o script_built.js --minified --compact"
