@@ -27,21 +27,21 @@ But of cause it is easy to apply own handler functions for each scenario.
 
 This feature, should not be included, but the source code itself shall be placed in the head of the html document, so we don't end up having the same problem we're trying to solve using this.
 
-__Copy the built script from 'built_script.js' and insert it within a `<script>` tag in your document head.__
+__Copy the built script from 'script_built.js' and insert it within a `<script>` tag in your document head.__
 
 
- - 'built_script.js' is built using `npm install && npm run build`
+ - 'script_built.js' is built using `npm install && npm run build`
 
 
 __And then init and load your files like this:__
 ```js
 
 var asset_load_controller_ins = new Asset_Load_Controller({
-	consider_too_slow_after_seconds: 12, // we have some huge ass js libraries to load.. :-)
-	timeout_after_seconds: 45, // we have some huge ass js libraries to load.. :-)
+	consider_too_slow_after_seconds: 0, // disabled
+	timeout_after_seconds: 15, // we have some huge js libraries to load
 })
 
-asset_load_controller_ins.load('my/js/built_script.js')
+asset_load_controller_ins.load('my/js/script_built.js')
 
 asset_load_controller_ins.load('my/css/stylesheet.css')
 
@@ -156,19 +156,17 @@ Overwrite the default event handler for one of the scenarios: "error", "too_slow
 __E.g.:__
 ```js
 
-Asset_Load_Controller_ins.set_event_handler('error', ()=>{
+Asset_Load_Controller_ins.set_event_handler('error', (failed_file)=>{
 
-	my_general_system_error_handler("");
-  
+	my_general_system_error_handler("Failed to load file: "+failed_file);
 })
 
-```	e
-
+```
 
 
 
 ## Sources ##
 
-- https://www.w3.org/TR/2011/WD-html5-author-20110705/the-script-element.html
+- [https://www.w3.org/TR/2011/WD-html5-author-20110705/the-script-element.html](https://www.w3.org/TR/2011/WD-html5-author-20110705/the-script-element.html)
 
 
