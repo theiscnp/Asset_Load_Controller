@@ -1,6 +1,6 @@
 # Asset_Load_Controller #
 
-By theischris@gmail.com.
+[https://github.com/theiscnp/Asset_Load_Controller](https://github.com/theiscnp/Asset_Load_Controller)
 
 Simple JS feature to control the inclusion/loading of the JS and CSS assets to a webpage,
  - and thereby being able to handle (in some clever manner), log, and then rule out such issues when debugging JS errors like `ReferenceError: My_Entire_App is not defined`.
@@ -130,7 +130,7 @@ Funct. 'load' will immediately initiate loading of the given
 
 (It just appends the ordinary `<script src="..">` tag into the head).
 
-You may add attributes to this appended element:
+You may add attributes to this appended element using:
 - 2nd param: "attributes"
 
 Possibly with a callback event to be executed upon successful loading of this specific asset:
