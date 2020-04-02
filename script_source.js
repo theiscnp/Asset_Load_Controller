@@ -80,21 +80,25 @@ class Asset_Load_Controller {
   }
 
 
-  load( asset_or_array_of_assets, callback_on_loading_complete = undefined ){
+  load( asset_or_array_of_assets, attributes_or_callback = undefined, callback = undefined ){
 
     var assets_to_load = []
 
     var assets_done_loading = []
 
     var on_done_loading_asset = (fp)=>{
-      assets_done_loading.push(fp)
 
-      if(typeof callback_on_loading_complete == 'function'
-          && assets_to_load.length == assets_done_loading.length
-      )
-        callback_on_loading_complete()
+      if(typeof fp == 'string')
+        assets_done_loading.push(fp)
+
+      if(assets_to_load.length == assets_done_loading.length)
+      {
+        assets_to_load = []
+
+        if(typeof callback == 'function')
+          callback()
+      }
     }
-
 
     if(typeof asset_or_array_of_assets == 'object' && typeof asset_or_array_of_assets[0] != 'undefined')
     {
@@ -116,28 +120,75 @@ class Asset_Load_Controller {
     }
     else
     {
-      console.error('Unexpected, misformatted or empty 1st param "asset_or_array_of_assets" given to Asset_Load_Controller funct. load. (json encoded): '+JSON.stringify(asset_or_array_of_assets));
+      console.error('Unexpected, malformed or empty 1st param "asset_or_array_of_assets" given to Asset_Load_Controller funct. load. (json encoded): '+JSON.stringify(asset_or_array_of_assets));
     }
+
+
+    var common_attributes = {}
+
+    if(typeof attributes_or_callback == 'object' && attributes_or_callback != null)
+    {
+      for(var a in attributes_or_callback)
+      {
+
+        if(['cb','callback','done'].indexOf(a)>=0 || typeof attributes_or_callback[a] == 'function')
+        {
+          callback = attributes_or_callback[a]
+        }
+        else if(typeof attributes_or_callback[a] == 'object')
+        {
+          for(var a2 in attributes_or_callback[a])
+            common_attributes[a2] = attributes_or_callback[a][a2]
+        }
+        else if(!isNaN(parseInt(a)))
+        {
+          common_attributes[attributes_or_callback[a]] = true
+        }
+        else
+        {
+          common_attributes[a] = attributes_or_callback[a]
+        }
+      }
+    }
+    else if(typeof attributes_or_callback == 'function')
+    {
+      callback = attributes_or_callback
+    }
+
 
 
     var doc_frag = document.createDocumentFragment()
 
+    var invalid_asset_keys = []
 
     for(var atlk in assets_to_load)
     {
-      let asset = assets_to_load[atlk], filepath = asset, attributes = []
+      let asset = assets_to_load[atlk], filepath = asset, attributes = [], asset_callback
 
       if(typeof asset == 'object')
       {
-        if(asset == null) return true
+        if(asset == null)
+        {
+          invalid_asset_keys.push(atlk)
+          continue
+        }
 
         for(var ak in asset)
         {
-          if([0,'file','path','filepath'].indexOf(ak)>=0)
+          if(ak==0 || ['file','path','filepath'].indexOf(ak)>=0)
           {
             filepath = asset[ak]
           }
-          else if(typeof ak == 'number')
+          else if(['cb','callback','done'].indexOf(ak)>=0 || typeof asset[ak] == 'function')
+          {
+            asset_callback = asset[ak]
+          }
+          else if(typeof asset[ak] == 'object')
+          {
+            for(var ak2 in asset[ak])
+              common_attributes[a2] = asset[ak][ak2]
+          }
+          else if(!isNaN(parseInt(ak)))
           {
             attributes[asset[ak]] = true
           }
@@ -148,19 +199,22 @@ class Asset_Load_Controller {
         }
       }
 
-      if(typeof filepath != 'string' && !filepath)
+      if(typeof filepath != 'string' || !filepath)
       {
-        console.error("Misformatted or missing asset object: Please specify the filepath as first item, 'file', 'path' or 'filepath'.");
-        return false
+        console.error("Malformed or missing asset object: Please specify the filepath as first item, 'file', 'path' or 'filepath'. Given asset: "+JSON.stringify(asset));
+        invalid_asset_keys.push(atlk)
+        continue
       }
 
 
-      if(filepath.substr(0,5) != 'http:' && filepath.substr(0,6) != 'https:' && filepath.substr(0,2) != '//')
+      var file_url = filepath
+
+      if(filepath.substring(0,5) != 'http:' && filepath.substring(0,6) != 'https:' && filepath.substring(0,2) != '//')
       {
         let bu = this.settings.base_url
         bu = bu.substring(bu.length-1)=='/' ? bu.substring(0,bu.length-1) : bu
 
-        filepath = bu+'/'+(filepath.substring(0,1)=='/' ? filepath.substring(1) : filepath)
+        file_url = bu+'/'+(filepath.substring(0,1)=='/' ? filepath.substring(1) : filepath)
       }
 
 
@@ -180,7 +234,9 @@ class Asset_Load_Controller {
         elem.charset = this.settings.default_charset
         elem.async = false
 
-        elem.src = filepath
+        elem.src = file_url
+
+        
       }
       else if(_f_type.substring(0,3) == 'css')
       {
@@ -190,11 +246,17 @@ class Asset_Load_Controller {
         elem.type = 'text/css'
         elem.charset = this.settings.default_charset
 
-        elem.href = filepath
+        elem.href = file_url
       }
       else
-        return console.error('Asset_Load_Controller: Couldn\'t recognize extension of filepath: "'+filepath+'".')
+      {
+        console.error('Asset_Load_Controller: Couldn\'t recognize extension of filepath: "'+filepath+'".')
+        invalid_asset_keys.push(atlk)
+        continue
+      }
 
+
+      for(var k in common_attributes) elem[k] = common_attributes[k]
 
       if(typeof attributes == 'object' && attributes != null)
       {
@@ -205,7 +267,7 @@ class Asset_Load_Controller {
       elem.class = (typeof elem.class == 'string' ? elem.class+' ':'') + 'appended-with-Asset_Load_Controller'
 
 
-      elem.onload = (function(filepath,callback_on_loading_complete){
+      elem.onload = (function(filepath,callback,asset_callback){
 
         clearTimeout(this.too_slow_timeout_handler_by_path[filepath])
         clearTimeout(this.timeout_timeout_handler_by_path[filepath])
@@ -214,7 +276,9 @@ class Asset_Load_Controller {
 
         on_done_loading_asset(filepath)
 
-      }).bind(this,filepath,callback_on_loading_complete)
+        if(typeof asset_callback == 'function') asset_callback()
+
+      }).bind(this,filepath,callback,asset_callback)
 
 
       elem.onerror = (function(e){
@@ -255,11 +319,24 @@ class Asset_Load_Controller {
 
         }).bind(this,filepath), this.settings.timeout_after_seconds*1000)
       }
-    
     }
 
-    document.head.appendChild(doc_frag)
+
+    for(var atlk in invalid_asset_keys) assets_to_load.splice(atlk,1)
+
+
+    if(typeof document.currentScript == 'object' && document.currentScript != null)
+    {
+      document.currentScript.parentNode.insertBefore(doc_frag, document.currentScript.nextSibling);
+    }
+    else
+    {
+      document.head.appendChild(doc_frag)
+    }
+
+    on_done_loading_asset()
   }
+
 
 }
 

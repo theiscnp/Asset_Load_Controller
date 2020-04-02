@@ -1,29 +1,29 @@
 # Asset_Load_Controller #
 
-[https://github.com/theiscnp/Asset_Load_Controller](https://github.com/theiscnp/Asset_Load_Controller)
+Simple JS component to control and manage issues in the inclusion/loading of the JS and CSS assets on any webpage.
+Primarily to fill the gap there is, in case  error handling by the browser in the case of failure to include the css og js that
 
-Simple JS feature to control the inclusion/loading of the JS and CSS assets to a webpage,
- - and thereby being able to handle (in some clever manner), log, and then rule out such issues when debugging JS errors like `ReferenceError: My_Entire_App is not defined`.
+featuring technical JS abilities:
+- bind customized event handlers to guide the user facing issues with the loading of an asset-file: "error", "too_slow", "timeout".
+- and ofcause a "callback" for when succeeded
 
-Scenarios we'd like to handle:
-- any kind of error resulting in the file not being loaded correctly
-- too/very/suspiciously slow requests
-- timed-out requests
-
-In these scenarios it would be nice to be able to, for example:
-- involve the user in the current issue he's experiencing, like
-- notify him that we haven't forgotten him if we're loading many resources and he has a slow connection
-- and if we deem the latency has reached some limit, infom the user about the issue and ask him if he'd like to
-- refresh the page and try again
-- or give us a head-up to our support@email.com
-
-The default event handlers takes good care of these scenarios.
-But of cause it is easy to apply own handler functions for each scenario.
+to handle or even solve problems like:
+- any kind of error causing a js or css file not to be loaded
+- too/very/suspiciously slow requests (slow/bad connection?)
+- actual "timeout" for asset request (if not handle by the browser)
+- rule out the (though tiny) chance that the user somehow failed to load some js file, when getting client error like `ReferenceError: My_Entire_App is not defined`.
 
 
+For example - it would be nice to be able to:
+- actually solve the issue, as we might if just some kind random/temporary network traffic problem, with a location.refreshs
+- and thereby also enabeling the possiblity that the browser handles the issue, in the case or client actually turned offline..!
+- Involve the user in specific scenarios, for example if we need the user to check his internet connection.
+- A method for easily avoiding the browser cache
+- Register cases that might be "actual" errors that requires debugging
 
 
-## Getting started ##
+
+## How to use ##
 
 This feature, should not be included, but the source code itself shall be placed in the head of the html document, so we don't end up having the same problem we're trying to solve using this.
 
@@ -34,11 +34,11 @@ __Copy the built script from 'script_built.js' and insert it within a `<script>`
 
 
 __And then init and load your files like this:__
-```js
+```JS
 
 var asset_load_controller_ins = new Asset_Load_Controller({
 	consider_too_slow_after_seconds: 0, // disabled
-	timeout_after_seconds: 15, // we have some huge js libraries to load
+	timeout_after_seconds: 10, // we have some huge js libraries to load
 })
 
 asset_load_controller_ins.load('my/js/script_built.js')
@@ -46,6 +46,97 @@ asset_load_controller_ins.load('my/js/script_built.js')
 asset_load_controller_ins.load('my/css/stylesheet.css')
 
 ```
+
+That was the demo... :-)
+
+To fully implement this component though, we're going to have to index/"datafy" all our <script> and <link>, js and css inclusion, into instead being a js array/object, or php array passed to js, of the files there is to be included on the current page.
+
+Pass the array of assets to the 'load' function as in this example:
+
+```JS
+
+var asset_load_controller_ins = new Asset_Load_Controller({
+  consider_too_slow_after_seconds: 0, // disable
+  timeout_after_seconds: 10,
+  base_url: '/assets/'
+})
+
+
+var incl_assets = [ // could've been passed here from php using json_encode
+  
+  'plugins/bootstrap/bootstrap.css',
+
+  'template/css/app.css',
+
+  'plugins/jquery/jquery.js',
+  'plugins/bootstrap/bootstrap.js',
+
+  'template/js/template.js',
+]
+
+
+asset_load_controller_ins.load(incl_assets, ()=>{
+
+	$('body').show()
+})
+```
+
+Notice that the file fill begin loading immediately, but async to the otherwise initial page load, regardless of the "async" and "defer" property (at least not in G. Chrome) so the body will be loaded while our assets are loading. Explains the `$('body').show()`..
+
+
+Another script may later be included as needed just like this:
+
+```HTML
+<script> asset_load_controller_ins.load('assets/js/aux/functionality.js') </script>
+```
+
+
+
+## Advanced ##
+
+Each asset may have its own property: "charset", "defer", "async" (or other attribute) and a callback function.
+
+
+__See following examples__
+
+
+```JSON
+
+var incl_assets = [
+	'script_A.js',
+	['script_B.js'],
+	['script_C.js', 'defer'],
+	['script_D.js', 'defer', 'async'],
+	['script_D.js', 'defer', 'async', {charset: 'ISO-8859-1'}],
+	['script_E.js', 'async', ()=>alert('Done loading script_E.js')],
+	{file: 'script_F.js', async: true, callback: ()=>alert('Done loading script_E.js')},
+	{path: 'script_G.js', async: true, done: ()=>alert('Done loading script_E.js')}
+	[script_H.js', ()=>alert('Done loading script_E.js')]
+]
+
+```
+
+
+__And you may specify settings for the entire load batch:__
+
+```JS
+
+// With a callback event:
+
+asset_load_controller_ins.load(incl_assets, ()=>{ $('body').show() })
+
+
+// Special charset + with a callback event:
+
+asset_load_controller_ins.load(incl_assets, {charset: 'ISO-8859-1'}, ()=>{ $('body').show() })
+
+
+// Deferred + different charset + callback event:
+
+asset_load_controller_ins.load(incl_assets, ['defer', {charset: 'ISO-8859-1'}], ()=>{ $('body').show() })
+
+```
+
 
 
 
@@ -138,7 +229,8 @@ Possibly with a callback event to be executed upon successful loading of this sp
 
 
 __E.g.:__
-```js
+
+```JS
 
 var Asset_Load_Controller_ins = new Asset_Load_Controller()
 
@@ -154,19 +246,36 @@ Asset_Load_Controller_ins.load('template/js/app.js', {'defer': true}, ()=>{ (new
 Overwrite the default event handler for one of the scenarios: "error", "too_slow" or "timeout".
 
 __E.g.:__
-```js
+```JS
 
 Asset_Load_Controller_ins.set_event_handler('error', (failed_file)=>{
 
 	my_general_system_error_handler("Failed to load file: "+failed_file);
 })
-
 ```
+
+
+
+## Developers Notes ##
+
+
+The following alternative solutions has been tried, but not succeesed:
+
+- The implementation would be a neat feature to be able to have a function that just bound the event listeners on the existing normal html script & link tags. But it is not possible to work with the tags before they're reached in the loading procces (top-down order
+
+
+## Browser Support ##
+
+As specified in Babel compiler settings in package.json.
+
+- Use of localStorage though (e.g. for if we want to remember that we've tried to reload the page)
+isn't supported until IE 8. See [https://caniuse.com/#search=localstorage](https://caniuse.com/#search=localstorage).
 
 
 
 ## Sources ##
 
 - [https://www.w3.org/TR/2011/WD-html5-author-20110705/the-script-element.html](https://www.w3.org/TR/2011/WD-html5-author-20110705/the-script-element.html)
+- [https://www.w3.org/TR/2011/WD-html5-author-20110809/the-link-element.html](https://www.w3.org/TR/2011/WD-html5-author-20110809/the-link-element.html)
 
 
