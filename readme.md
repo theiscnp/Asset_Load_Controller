@@ -47,9 +47,8 @@ asset_load_controller_ins.load('my/css/stylesheet.css')
 
 ```
 
-That was the demo... :-)
 
-To fully implement this component though, we're going to have to index/"datafy" all our <script> and <link>, js and css inclusion, into instead being a js array/object, or php array passed to js, of the files there is to be included on the current page.
+__To fully implement this component though__, we're going to have to index/"datafy" all our <script> and <link>, js and css inclusion, into instead being a js array/object, or php array passed to js, of the files there is to be included on the current page.
 
 Pass the array of assets to the 'load' function as in this example:
 
@@ -121,7 +120,7 @@ __And you may specify settings for the entire load batch:__
 
 ```JS
 
-// With a callback event:
+// With a callback event (for when all done):
 
 asset_load_controller_ins.load(incl_assets, ()=>{ $('body').show() })
 
@@ -216,16 +215,21 @@ Default value: 60
 
 ### load ###
 
-Funct. 'load' will immediately initiate loading of the given
-- 1st param: "filepath"
+Funct. 'load' will immediately initiate loading of the given filepath or array of assets in
+
+1. param: "asset_or_array_of_assets"
+
 
 (It just appends the ordinary `<script src="..">` tag into the head).
 
-You may add attributes to this appended element using:
-- 2nd param: "attributes"
+You may add attributes to this appended element (or if none, the callback event) using:
+	
+2. param: "attributes_or_callback"
 
-Possibly with a callback event to be executed upon successful loading of this specific asset:
-- 3rd param: "callback_on_success"
+
+Possibly with a callback event to be executed upon successful loading of the specified asset(s):
+
+3. param: "callback"
 
 
 __E.g.:__
