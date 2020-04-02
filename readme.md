@@ -3,23 +3,23 @@
 Simple JS component to control and manage issues in the inclusion/loading of the JS and CSS assets on any webpage.
 Primarily to fill the gap there is, in case  error handling by the browser in the case of failure to include the css og js that
 
-featuring technical JS abilities:
-- bind customized event handlers to guide the user facing issues with the loading of an asset-file: "error", "too_slow", "timeout".
-- and of course a "callback" for when succeeded
+features abilities in JS to:
+- bind customized event handlers to the loading of assets: "error", "too_slow", "timeout".
+- bind custom "callback" event handlers to be executed upon the complete loading of assets
 
 to handle or even solve problems like:
 - any kind of error causing a js or css file not to be loaded
 - too/very/suspiciously slow requests (slow/bad connection?)
 - actual "timeout" for asset request (if not handle by the browser)
-- rule out the (though tiny) chance that the user somehow failed to load some js file, when getting client error like `ReferenceError: My_Entire_App is not defined`.
+- rule out the chance that the user somehow failed to load some js file, when getting client error like `ReferenceError: My_Entire_App is not defined` (like if a Firefox user presses esc during loading).
 
-
-For example - it would be nice to be able to:
-- actually solve the issue, as we might if just some kind random/temporary network traffic problem, with a location.refresh
-- and thereby also enabeling the possiblity that the browser handles the issue, in the case or client actually turned offline..!
+For example, we might want to customize to:
+- Take control of the loading proccess; when & how, what should be loaded (we might even want a splash-screen)
+- Actually solve some random/network with a single location.refresh.
+- Let the browser handle the issue, in the case or client actually turned offline.
 - Involve the user in specific scenarios, for example if we need the user to check his internet connection.
-- A method for easily avoiding the browser cache
-- Register cases that might be "actual" errors that requires debugging
+- Refresh the page while avoiding the browser cache
+- Register/log actual errors
 
 
 
@@ -80,7 +80,9 @@ asset_load_controller_ins.load(incl_assets, ()=>{
 })
 ```
 
-__Notice__ that though the file fill begin loading immediately, it will be async with the initial page load, regardless of the "async" and "defer" properties - so the rest of the document will continue quickly get loaded while our assets are loading on a different "thread". Explains the `$('body').show()` in the that example..
+__Notice__ that though the file fill begin loading immediately, it will be async with the initial page load, regardless of the "async" and "defer" properties - so the rest of the document will continue to get loaded without waiting for our assets to finish loading. Explains the `$('body').show()` in the that example..
+
+You may see this as an oppertunity to customize the loading proccess and design the loading scene of the webpage!
 
 __Which is also why you must be acquainted with:__ `window.addEventListener('load', () =>`
 to bind our events for when the page is done loading
