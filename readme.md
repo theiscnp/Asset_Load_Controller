@@ -15,7 +15,7 @@ to handle or even solve problems like:
 
 
 For example - it would be nice to be able to:
-- actually solve the issue, as we might if just some kind random/temporary network traffic problem, with a location.refreshs
+- actually solve the issue, as we might if just some kind random/temporary network traffic problem, with a location.refresh
 - and thereby also enabeling the possiblity that the browser handles the issue, in the case or client actually turned offline..!
 - Involve the user in specific scenarios, for example if we need the user to check his internet connection.
 - A method for easily avoiding the browser cache
@@ -48,7 +48,7 @@ asset_load_controller_ins.load('my/css/stylesheet.css')
 ```
 
 
-__To fully implement this component though__, we're going to have to index/"datafy" all our <script> and <link>, js and css inclusion, into instead being a js array/object, or php array passed to js, of the files there is to be included on the current page.
+__To fully implement this component though__, we're going to have to index/"datafy" all our `<script>` and `<link>`, js and css inclusion, into instead being a js array/object, or php array passed to js, of the files there is to be included on the current page.
 
 Pass an array of assets to the 'load' function as in this example:
 
