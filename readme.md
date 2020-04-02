@@ -50,7 +50,7 @@ asset_load_controller_ins.load('my/css/stylesheet.css')
 
 __To fully implement this component though__, we're going to have to index/"datafy" all our <script> and <link>, js and css inclusion, into instead being a js array/object, or php array passed to js, of the files there is to be included on the current page.
 
-Pass the array of assets to the 'load' function as in this example:
+Pass an array of assets to the 'load' function as in this example:
 
 ```JS
 
@@ -87,14 +87,6 @@ to bind our events for when the page is done loading
 as the usual `$(document).ready`" doesn't cover assets requested "on the fly" like this.
 
 
-
-
-
-Another script may later be included as needed just like this:
-
-```HTML
-<script> asset_load_controller_ins.load('assets/js/aux/functionality.js') </script>
-```
 
 
 
