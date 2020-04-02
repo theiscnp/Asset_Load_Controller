@@ -5,7 +5,7 @@ Primarily to fill the gap there is, in case  error handling by the browser in th
 
 featuring technical JS abilities:
 - bind customized event handlers to guide the user facing issues with the loading of an asset-file: "error", "too_slow", "timeout".
-- and ofcause a "callback" for when succeeded
+- and of course a "callback" for when succeeded
 
 to handle or even solve problems like:
 - any kind of error causing a js or css file not to be loaded
@@ -80,7 +80,14 @@ asset_load_controller_ins.load(incl_assets, ()=>{
 })
 ```
 
-Notice that the file fill begin loading immediately, but async to the otherwise initial page load, regardless of the "async" and "defer" property (at least not in G. Chrome) so the body will be loaded while our assets are loading. Explains the `$('body').show()`..
+__Notice__ that though the file fill begin loading immediately, it will be async with the initial page load, regardless of the "async" and "defer" properties - so the rest of the document will continue quickly get loaded while our assets are loading on a different "thread". Explains the `$('body').show()` in the that example..
+
+__Which is also why you must be acquainted with:__ `window.addEventListener('load', () =>`
+to bind our events for when the page is done loading
+as the usual `$(document).ready`" doesn't cover assets requested "on the fly" like this.
+
+
+
 
 
 Another script may later be included as needed just like this:
@@ -88,85 +95,6 @@ Another script may later be included as needed just like this:
 ```HTML
 <script> asset_load_controller_ins.load('assets/js/aux/functionality.js') </script>
 ```
-
-
-
-## Advanced ##
-
-Each asset may have its own property: "charset", "defer", "async" (or other attribute) and a callback function.
-
-
-__See following examples__
-
-
-```JS
-
-var incl_assets = [
-	'script_A.js',
-	['script_B.js'],
-	['script_C.js', 'defer'],
-	['script_D.js', 'defer', 'async'],
-	['script_D.js', 'defer', 'async', {charset: 'ISO-8859-1'}],
-	['script_E.js', 'async', ()=>alert('Done loading script_E.js')],
-	{file: 'script_F.js', async: true, callback: ()=>alert('Done loading script_E.js')},
-	{path: 'script_G.js', async: true, done: ()=>alert('Done loading script_E.js')}
-	[script_H.js', ()=>alert('Done loading script_E.js')]
-]
-
-```
-
-
-__And you may specify settings for the entire load batch:__
-
-```JS
-
-// With a callback event (for when all done):
-
-asset_load_controller_ins.load(incl_assets, ()=>{ $('body').show() })
-
-
-// Special charset + with a callback event:
-
-asset_load_controller_ins.load(incl_assets, {charset: 'ISO-8859-1'}, ()=>{ $('body').show() })
-
-
-// Deferred + different charset + callback event:
-
-asset_load_controller_ins.load(incl_assets, ['defer', {charset: 'ISO-8859-1'}], ()=>{ $('body').show() })
-
-```
-
-
-
-
-
-## Events ##
-
-
-### "too_slow" ###
-
-Executed if the load of an asset has neither succeeded nor failed after waiting for "consider_too_slow_after_seconds".
-May be used to log
-or maybe to notify the user that we haven't forgotten him.. :-)
-
-
-### "timeout" ###
-
-Executed if  the load of an asset has neither succeeded nor failed after waiting for 'timeout_after_seconds'.
-This can be used to, for example:
-- log the error,
-- inform the user (e.g. ask him about the quality of his internet connection),
-- or refresh the page to try again automatically or by the choice of the user.
-
-
-### "error" ###
-
-Executed if a request fails to load.
-
-This can be used to, for example:
-- log the error,
-- inform the user (e.g. ask him about the quality of his internet connection),
-- or refresh the page to try again automatically or by the choice of the user.
 
 
 
@@ -260,12 +188,86 @@ Asset_Load_Controller_ins.set_event_handler('error', (failed_file)=>{
 
 
 
-## Developers Notes ##
+
+## Events ##
 
 
-The following alternative solutions has been tried, but not succeesed:
+### "too_slow" ###
 
-- The implementation would be a neat feature to be able to have a function that just bound the event listeners on the existing normal html script & link tags. But it is not possible to work with the tags before they're reached in the loading procces (top-down order
+Executed if the load of an asset has neither succeeded nor failed after waiting for "consider_too_slow_after_seconds".
+May be used to log
+or maybe to notify the user that we haven't forgotten him.. :-)
+
+
+### "timeout" ###
+
+Executed if  the load of an asset has neither succeeded nor failed after waiting for 'timeout_after_seconds'.
+This can be used to, for example:
+- log the error,
+- inform the user (e.g. ask him about the quality of his internet connection),
+- or refresh the page to try again automatically or by the choice of the user.
+
+
+### "error" ###
+
+Executed if a request fails to load.
+
+This can be used to, for example:
+- log the error,
+- inform the user (e.g. ask him about the quality of his internet connection),
+- or refresh the page to try again automatically or by the choice of the user.
+
+
+
+
+
+## Advanced ##
+
+Each asset may have its own property: "charset", "defer", "async" (or other attribute) and a callback function.
+
+
+__See following examples__
+
+
+```JS
+
+var incl_assets = [
+	'script_A.js',
+	['script_B.js'],
+	['script_C.js', 'defer'],
+	['script_D.js', 'defer', 'async'],
+	['script_D.js', 'defer', 'async', {charset: 'ISO-8859-1'}],
+	['script_E.js', 'async', ()=>alert('Done loading script_E.js')],
+	{file: 'script_F.js', async: true, callback: ()=>alert('Done loading script_E.js')},
+	{path: 'script_G.js', async: true, done: ()=>alert('Done loading script_E.js')}
+	[script_H.js', ()=>alert('Done loading script_E.js')]
+]
+
+```
+
+
+__And you may specify settings for the entire load batch:__
+
+```JS
+
+// With a callback event (for when all done):
+
+asset_load_controller_ins.load(incl_assets, ()=>{ $('body').show() })
+
+
+// Special charset + with a callback event:
+
+asset_load_controller_ins.load(incl_assets, {charset: 'ISO-8859-1'}, ()=>{ $('body').show() })
+
+
+// Deferred + different charset + callback event:
+
+asset_load_controller_ins.load(incl_assets, ['defer', {charset: 'ISO-8859-1'}], ()=>{ $('body').show() })
+
+```
+
+
+
 
 
 ## Browser Support ##
@@ -281,5 +283,5 @@ isn't supported until IE 8. See [https://caniuse.com/#search=localstorage](https
 
 - [https://www.w3.org/TR/2011/WD-html5-author-20110705/the-script-element.html](https://www.w3.org/TR/2011/WD-html5-author-20110705/the-script-element.html)
 - [https://www.w3.org/TR/2011/WD-html5-author-20110809/the-link-element.html](https://www.w3.org/TR/2011/WD-html5-author-20110809/the-link-element.html)
-
+- [https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event]https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event()
 
