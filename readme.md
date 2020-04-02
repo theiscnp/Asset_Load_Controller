@@ -50,7 +50,7 @@ asset_load_controller_ins.load('my/css/stylesheet.css')
 
 __To fully implement this component though__, we're going to have to index/"datafy" all our `<script>` and `<link>`, js and css inclusion, into instead being a js array/object, or php array passed to js, of the files there is to be included on the current page.
 
-Pass an array of assets to the 'load' function as in this example:
+Initialize with settings and pass your list of assets to the 'load' function as in this example:
 
 ```JS
 
@@ -74,21 +74,21 @@ var incl_assets = [ // could've been passed here from php using json_encode
 ]
 
 
-asset_load_controller_ins.load(incl_assets, ()=>{
-
-	$('body').show()
-})
+asset_load_controller_ins.load( incl_assets )
 ```
 
-__Notice__ that though the file fill begin loading immediately, it will be async with the initial page load, regardless of the "async" and "defer" properties - so the rest of the document will continue to get loaded without waiting for our assets to finish loading. Explains the `$('body').show()` in the that example..
+or just a single file: `<script> asset_load_controller_ins.load( 'my/ext/script.js' ) </script>`.
 
-You may see this as an oppertunity to customize the loading proccess and design the loading scene of the webpage!
+
+## Notice ##
+
+Loading assets like this, will be async to the initial page load, regardless of the "async" and "defer" properties - the rest of the document will continue to load without waiting for our assets to finish loading.
 
 __Which is also why you must be acquainted with:__ `window.addEventListener('load', () =>`
 to bind our events for when the page is done loading
 as the usual `$(document).ready`" doesn't cover assets requested "on the fly" like this.
 
-
+You may see this as an oppertunity to customize the loading proccess and design the loading scene of the webpage!
 
 
 
@@ -121,7 +121,7 @@ Default value: 30
 
 
 
-### let_user_decide_to_wait_up_to_seconds ###
+### let_user_decide_to_wait_up_to_seconds (int) ###
 
 In case we asked the user if he would like to refresh and try again or he'd rather try waiting
 and the user choses the latter,
