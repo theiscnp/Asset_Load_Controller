@@ -99,7 +99,7 @@ Each asset may have its own property: "charset", "defer", "async" (or other attr
 __See following examples__
 
 
-```JSON
+```JS
 
 var incl_assets = [
 	'script_A.js',
