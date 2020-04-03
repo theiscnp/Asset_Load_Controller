@@ -30,7 +30,7 @@ This feature, should not be included, but the source code itself shall be placed
 __Copy the built script from 'script_built.js' and insert it within a `<script>` tag in your document head.__
 
 
- - 'script_built.js' is built using `npm install && npm run build`
+ - 'script_built.js' is built using `npm install && npm run build`.
 
 
 __And then init and load your files like this:__
@@ -80,9 +80,11 @@ asset_load_controller_ins.load( incl_assets )
 or just a single file: `<script> asset_load_controller_ins.load( 'my/ext/script.js' ) </script>`.
 
 
+
+
 ## Notice ##
 
-Loading assets like this, will be async to the initial page load, regardless of the "async" and "defer" properties - the rest of the document will continue to load without waiting for our assets to finish loading.
+Loading assets like this, they are per default not async, but they will be async to the initial page load regardless of the "async" and "defer" properties - the rest of the document will continue to load without waiting for our assets to finish loading.
 
 __Which is also why you must be acquainted with:__ `window.addEventListener('load', () =>`
 to bind our events for when the page is done loading
@@ -266,10 +268,7 @@ asset_load_controller_ins.load(incl_assets, ['defer', {charset: 'ISO-8859-1'}], 
 
 ## Browser Support ##
 
-As specified in Babel compiler settings in package.json.
-
-- Use of localStorage though (e.g. for if we want to remember that we've tried to reload the page)
-isn't supported until IE 8. See [https://caniuse.com/#search=localstorage](https://caniuse.com/#search=localstorage).
+As specified in package.json when compiled.
 
 
 
@@ -278,4 +277,4 @@ isn't supported until IE 8. See [https://caniuse.com/#search=localstorage](https
 - [https://www.w3.org/TR/2011/WD-html5-author-20110705/the-script-element.html](https://www.w3.org/TR/2011/WD-html5-author-20110705/the-script-element.html)
 - [https://www.w3.org/TR/2011/WD-html5-author-20110809/the-link-element.html](https://www.w3.org/TR/2011/WD-html5-author-20110809/the-link-element.html)
 - [https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event]https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event()
-
+- [https://eslint.org/docs/rules/](https://eslint.org/docs/rules/)

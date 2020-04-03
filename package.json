@@ -1,14 +1,16 @@
 {
   "name": "Asset_Load_Controller",
-  "version": "0.8.0",
-  "author": "Theis C. N. Pedersen",
-  "scripts": {
-    "build": "babel script_source.js -o script_built.js --minified --compact"
+  "version": "0.9.0",
+  "author": "Theis C. N. Pedersen <theischris@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theiscnp/Asset_Load_Controller.git"
   },
   "devDependencies": {
     "@babel/cli": "7.8.4",
     "@babel/core": "7.9.0",
-    "@babel/preset-env": "7.9.0"
+    "@babel/preset-env": "7.9.0",
+    "eslint": "6.8.0"
   },
   "babel": {
     "presets": [
@@ -26,5 +28,28 @@
         "stage-0"
       ]
     ]
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es6": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": 2018
+    },
+    "rules": {
+      "indent": [
+        "error",
+        "tab"
+      ],
+      "no-unused-vars": [
+        "error",
+        { "vars": "local" }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "npx eslint script_source.js && babel script_source.js -o script_built.js --minified --compact"
   }
 }
