@@ -1,7 +1,6 @@
 # Asset_Load_Controller #
 
-Simple JS component to control and manage issues in the inclusion/loading of the JS and CSS assets on any webpage.
-Primarily to fill the gap there is, in case  error handling by the browser in the case of failure to include the css og js that
+JS component to control and manage issues in the inclusion/loading of the JS and CSS assets on a webpage.
 
 features abilities in JS to:
 - bind customized event handlers to the loading of assets: "error", "too_slow", "timeout".

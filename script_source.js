@@ -8,13 +8,13 @@ class Asset_Load_Controller {
 			base_url: '/',
 			default_charset: 'UTF-8',
 			consider_too_slow_after_seconds: 5,
-			timeout_after_seconds: 30,
-			let_user_decide_to_wait_up_to_seconds: 60,
+			timeout_after_seconds: 10,
+			let_user_decide_to_wait_up_to_seconds: 30,
 		}
 
 		for(let k in init_settings)
 		{
-			if(typeof this.settings[k] == 'undefined') console.error('Asset_Load_Controller: Unknown setting given: "'+k+'" with value: "'+init_settings[k]+'"');
+			if(typeof this.settings[k] == 'undefined') console.warn('Asset_Load_Controller: Unknown setting given: "'+k+'" with value: "'+init_settings[k]+'"');
 
 			this.settings[k] = init_settings[k]
 		}

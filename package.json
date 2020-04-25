@@ -1,6 +1,6 @@
 {
   "name": "Asset_Load_Controller",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "author": "Theis C. N. Pedersen <theischris@gmail.com>",
   "repository": {
     "type": "git",
@@ -45,7 +45,9 @@
       ],
       "no-unused-vars": [
         "error",
-        { "vars": "local" }
+        {
+          "vars": "local"
+        }
       ]
     }
   },
