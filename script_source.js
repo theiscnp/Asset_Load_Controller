@@ -1,7 +1,14 @@
+'use strict';
+// eases debugging by fx trowing error upon 'this' coercion to window
+
 
 class Asset_Load_Controller {
 
-	constructor(init_settings = {}){
+	constructor( init_settings = {} ){
+
+		
+		// Configure settings by passing js array object when initiating
+		// e.g.: window.ALC = new Asset_Load_Controller({ base_url: '/assets' })
 
 		this.settings = {
 
@@ -12,6 +19,7 @@ class Asset_Load_Controller {
 			let_user_decide_to_wait_up_to_seconds: 30,
 		}
 
+
 		for(let k in init_settings)
 		{
 			if(typeof this.settings[k] == 'undefined') console.warn('Asset_Load_Controller: Unknown setting given: "'+k+'" with value: "'+init_settings[k]+'"');
@@ -20,20 +28,12 @@ class Asset_Load_Controller {
 		}
 
 
-		this.status_by_path = {}
-		
-		this.too_slow_timeout_handler_by_path = {}
-		this.timeout_timeout_handler_by_path = {}
-
-		this.state = {
-			has_given_too_slow_warning: false,
-			has_given_timeout_error: false,
-			has_given_error: false
-		}
+		// Use method 'set_event_handler' to overwrite default event handlers
+		// e.g.: ALC.set_event_handler('error', ()=> alert( 'Sorry about the inconvenience of this too long load duration..!' ) )
 
 		this.on_event = {
 
-			'error': ( filepath )=>{
+			'error': ( filepath )=>{ // when a file has failed to load
 
 				console.error('Failed to load asset "'+filepath+'": Got actual error. We can not know the cause of the error; it could be a temporary network error at the user, but it might also be the server or that the file is actually missing or the path is wrong.');
 
@@ -41,11 +41,16 @@ class Asset_Load_Controller {
 				{
 					this.state.has_given_error = true
 				
-					alert('Failed to load required resources. Please refresh this webpage and hope for the best :-)');
+					alert(
+						'Failed to load required resources.'
+					  + 'Please refresh this webpage and hope for the best :-)'
+					);
+					
+					// Using js universal funct. 'alert' though we could check ASL.status_by_path for the modal comp....
 				}
 			},
 
-			'too_slow': ( filepath )=>{
+			'too_slow': ( filepath )=>{ // when a file has failed to load for x seconds
 				
 				console.error('Issue loading asset "'+filepath+'": reached "too_slow" limit after '+this.settings.consider_too_slow_after_seconds+' seconds.');
 
@@ -57,7 +62,7 @@ class Asset_Load_Controller {
 				}
 			},
 
-			'timeout': ( filepath )=>{
+			'timeout': ( filepath )=>{ // when a file-load reaches this.settings.timeout_after_seconds 
 
 				console.error('Failed to load asset "'+filepath+'": Timed out after '+this.settings.timeout_after_seconds+' seconds.');
 
@@ -65,9 +70,22 @@ class Asset_Load_Controller {
 				{
 					this.state.has_given_timeout_error = true
 
-					alert("Sorry - It seems that something went wrong with your internet connection to our server. Please check your connection (e.g. go to google.com). If you can load other websites with a reasonable load-time, it's probably an issue with our server, and we'd appreciate a head-up at support@"+window.location.host)
+					alert("Sorry - It seems that something went wrong in the internet connection. Please check your connection (e.g. go to google.com). If you can load other websites within a reasonable load-time, it's probably an issue with our server, and we'd appreciate a head-up at support@"+window.location.host)
 				}
 			}
+		}
+
+
+
+		this.status_by_path = {}
+		
+		this.too_slow_timeout_handler_by_path = {}
+		this.timeout_timeout_handler_by_path = {}
+
+		this.state = {
+			has_given_too_slow_warning: false,
+			has_given_timeout_error: false,
+			has_given_error: false
 		}
 	}
 
