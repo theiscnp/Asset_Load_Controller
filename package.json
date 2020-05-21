@@ -52,6 +52,6 @@
     }
   },
   "scripts": {
-    "build": "npx eslint script_source.js && babel script_source.js -o script_built.js --minified --compact"
+    "build": "npx eslint script_source.js && babel script_source.js -o script_built.js --minified --compact --no-comments"
   }
 }
