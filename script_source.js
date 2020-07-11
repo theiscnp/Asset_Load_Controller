@@ -1,6 +1,3 @@
-'use strict'; // eases debugging by fx trowing error upon 'this' coercion
-
-
 
 class Asset_Load_Controller {
 
@@ -183,7 +180,10 @@ class Asset_Load_Controller {
 
 		for(let atlk in assets_to_load)
 		{
-			let asset = assets_to_load[atlk], filepath = asset, attributes = [], asset_callback
+			let asset = assets_to_load[atlk]
+			let filepath = typeof asset == 'string' ? asset : null
+			let attributes = []
+			let asset_callback
 
 			if(typeof asset == 'object') // Parse asset object in a creative way made possible by the coincidence that the possible parameters is of different types (typeof)
 			{
@@ -197,7 +197,14 @@ class Asset_Load_Controller {
 				{
 					let prop = asset[ak]
 
-					if(ak==0 || ['file','path','filepath'].indexOf(ak)>=0)
+					if ( typeof prop == 'string'
+						  && prop.indexOf('.') > 1
+					     && (
+					         ak==0
+								|| ['file','path','filepath','src'].indexOf(ak) >= 0
+								|| ! filepath
+					     )
+					)
 					{
 						filepath = prop
 					}
@@ -208,7 +215,9 @@ class Asset_Load_Controller {
 					else if(typeof prop == 'object')
 					{
 						for(let prop_object_key in prop)
+						{
 							common_attributes[prop_object_key] = prop[prop_object_key]
+						}
 					}
 					else if(!isNaN(parseInt(ak)))
 					{
@@ -377,7 +386,4 @@ class Asset_Load_Controller {
 		on_done_loading_asset()
 	}
 
-
 }
-
-/* http://github.com/theiscnp/Asset_Load_Controller */
