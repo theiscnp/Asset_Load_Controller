@@ -6,12 +6,14 @@
     "type": "git",
     "url": "https://github.com/theiscnp/Asset_Load_Controller.git"
   },
+
   "devDependencies": {
     "@babel/cli": "7.8.4",
     "@babel/core": "7.9.0",
     "@babel/preset-env": "7.9.0",
     "eslint": "6.8.0"
   },
+
   "babel": {
     "presets": [
       [
@@ -29,6 +31,7 @@
       ]
     ]
   },
+
   "eslintConfig": {
     "env": {
       "browser": true,
@@ -51,6 +54,7 @@
       ]
     }
   },
+  
   "scripts": {
     "build": "npx eslint script_source.js && babel script_source.js -o script_built.js --minified --compact --no-comments"
   }
