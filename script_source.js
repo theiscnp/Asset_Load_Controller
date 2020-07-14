@@ -198,11 +198,11 @@ class Asset_Load_Controller {
 					let prop = asset[ak]
 
 					if ( typeof prop == 'string'
-						  && prop.indexOf('.') > 1
+					    && prop.indexOf('.') > 1
 					     && (
 					         ak==0
-								|| ['file','path','filepath','src'].indexOf(ak) >= 0
-								|| ! filepath
+					         || ['file','path','filepath','src'].indexOf(ak) >= 0
+					         || ! filepath
 					     )
 					)
 					{
