@@ -32,7 +32,7 @@ class Asset_Load_Controller {
 
 		this.on_event = {
 
-			'error': ( filepath )=>{ // when a file has failed to load
+			error: ( filepath )=>{ // when a file has failed to load
 
 				console.error('Failed to load asset "'+filepath+'": Got actual error. We can not know the cause of the error; it could be a temporary network error at the user, but it might also be the server or that the file is actually missing or the path is wrong.');
 
@@ -49,7 +49,7 @@ class Asset_Load_Controller {
 				}
 			},
 
-			'too_slow': ( filepath )=>{ // when a file has failed to load for x seconds
+			too_slow: ( filepath )=>{ // when a file has failed to load for x seconds
 				
 				console.error('Issue loading asset "'+filepath+'": reached "too_slow" limit after '+this.settings.consider_too_slow_after_seconds+' seconds.');
 
@@ -61,7 +61,7 @@ class Asset_Load_Controller {
 				}
 			},
 
-			'timeout': ( filepath )=>{ // when a file-load reaches this.settings.timeout_after_seconds 
+			timeout: ( filepath )=>{ // when a file-load reaches this.settings.timeout_after_seconds 
 
 				console.error('Failed to load asset "'+filepath+'": Timed out after '+this.settings.timeout_after_seconds+' seconds.');
 
