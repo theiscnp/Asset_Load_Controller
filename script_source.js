@@ -1,9 +1,8 @@
 
 class Asset_Load_Controller {
 
-	constructor( init_settings = {} ){
+	constructor( init_settings = {}, load_now = null, cb = null ){
 
-		
 		// Pass your overriding settings when initialized
 		// e.g.: window.ALC = new Asset_Load_Controller({ base_url: '/assets' })
 
@@ -82,6 +81,11 @@ class Asset_Load_Controller {
 		this.too_slow_timeout_handler_by_path = {}
 		this.timeout_timeout_handler_by_path = {}
 
+
+		if ( load_now != null )
+		{
+			this.load ( load_now,  typeof(cb)=='string' ? ()=>eval(cb) : cb );
+		}
 	}
 
 
@@ -102,14 +106,18 @@ class Asset_Load_Controller {
 		let on_done_loading_asset = (fp)=>{
 
 			if(typeof fp == 'string')
+			{
 				assets_done_loading.push(fp)
+			}
 
 			if(assets_to_load.length == assets_done_loading.length)
 			{
 				assets_to_load = []
 
 				if(typeof callback == 'function')
+				{
 					callback()
+				}
 			}
 		}
 
