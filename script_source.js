@@ -205,13 +205,17 @@ class Asset_Load_Controller {
 				{
 					let prop = asset[ak]
 
-					if ( typeof prop == 'string'
-					    && prop.indexOf('.') > 1
-					     && (
-					         ak==0
-					         || ['file','path','filepath','src'].indexOf(ak) >= 0
-					         || ! filepath
-					     )
+					if (	typeof prop == 'string'
+						 &&
+							prop.indexOf('.') > 1
+						 &&
+							(
+								 ak == 0
+							 ||
+								 ['file','path','filepath','src'].indexOf(ak) >= 0
+							 ||
+								 ! filepath
+							)
 					)
 					{
 						filepath = prop
@@ -388,10 +392,33 @@ class Asset_Load_Controller {
 		}
 		else
 		{
-			document.head.appendChild(doc_frag)
+			document.head.appendChild ( doc_frag )
 		}
 
 		on_done_loading_asset()
+	}
+
+	new ( pathname, cb, ...args ) {
+
+		let path = pathname
+
+		let name = pathname
+
+		if( pathname.lastIndexOf('.') <= pathname.lastIndexOf('/') )
+		{
+			path = pathname + '.js'
+		}
+		else
+		{
+			name = pathname.substring ( 0, pathname.lastIndexOf('.') )
+		}
+
+		this.load ( [ [ path, () => {
+			
+			let c = eval( name )
+
+			cb ( new c ( ...args ) )
+		}]])
 	}
 
 }

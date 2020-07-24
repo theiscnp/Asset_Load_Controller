@@ -1,5 +1,5 @@
 
 npm run build
 
-# npx eslint script_source.js && babel script_source.js -o script_built.js --minified --compact --no-comments
+# npx eslint script_source.js --fix && babel script_source.js -o script_built.js --minified --compact --no-comments
 # fails; Error: Unexpected extra options ["stage-0"] passed to preset.
