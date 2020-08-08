@@ -431,10 +431,15 @@ class Asset_Load_Controller {
 
 			let name = pathname
 
-			
-			if ( pathname.substring(pathname.length-3) != '.js' )
+			if ( path.indexOf('/') < 0 )
 			{
-				path = pathname + '.js'
+				path = `${path}/${path}`
+			}
+
+			
+			if ( path.substring(path.length-3) != '.js' )
+			{
+				path = path + '.js'
 			}
 			else if(pathname.lastIndexOf('.') > pathname.lastIndexOf('/'))
 			{
