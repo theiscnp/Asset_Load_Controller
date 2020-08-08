@@ -398,7 +398,8 @@ class Asset_Load_Controller {
 		on_done_loading_asset()
 	}
 
-	new ( pathname, cb, ...args ) {
+
+	_new ( pathname, cb, ...args ) {
 
 		let path = pathname
 
@@ -421,4 +422,35 @@ class Asset_Load_Controller {
 		}]])
 	}
 
+
+	async new ( pathname, ...args ) {
+
+		return new Promise( resolve => {
+			
+			let path = pathname
+
+			let name = pathname
+
+			
+			if ( pathname.substring(pathname.length-3) != '.js' )
+			{
+				path = pathname + '.js'
+			}
+			else if(pathname.lastIndexOf('.') > pathname.lastIndexOf('/'))
+			{
+				name = pathname.substring ( 0, pathname.lastIndexOf('.') )
+			}
+
+
+			console.log('load: "'+name+'" at "'+path+'"');
+
+
+			this.load ( [ [ path, () => {
+
+				let c = eval( name )
+
+				resolve ( new c ( ...args ) )
+			}]])
+		})
+	}
 }

@@ -19,10 +19,7 @@
         {
           "modules": false,
           "targets": {
-            "chrome": "42",
-            "edge": "12",
-            "ie": "8",
-            "safari": "5.1"
+            "edge": "18"
           }
         },
         "stage-0"
