@@ -447,9 +447,6 @@ class Asset_Load_Controller {
 			}
 
 
-			console.log('load: "'+name+'" at "'+path+'"');
-
-
 			this.load ( [ [ path, () => {
 
 				let c = eval( name )
@@ -458,4 +455,5 @@ class Asset_Load_Controller {
 			}]])
 		})
 	}
+
 }
